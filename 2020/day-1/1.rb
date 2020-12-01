@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'open-uri'
 
-numbers = open('1-inputs.txt').read.split.map(&:to_i)
+numbers = open('input.txt').read.split.map(&:to_i)
 
 numbers.each do |x|
 numbers.each do |y|
