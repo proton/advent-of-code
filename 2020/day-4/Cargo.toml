@@ -1,0 +1,13 @@
+[package]
+name = "part2"
+version = "0.1.0"
+authors = ["proton"]
+
+[dependencies]
+regex = "1"
+
+[[bin]]
+name = "part2"
+path = "part2.rs"
+test = false
+bench = false
