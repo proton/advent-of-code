@@ -16,6 +16,7 @@ fn main() {
         } else {
           if let Some(last) = passports_data.last_mut() {
             last.push_str(&(" ".to_string() + &l));
+            last.push(' ');
           }
         }
       }
@@ -38,7 +39,7 @@ fn passport_valid(passport: &str) -> bool {
 }
 
 fn byr_valid(passport: &str) -> bool {
-  let re = Regex::new(r"byr:(\d{4})").unwrap(); // byr (Birth Year) - four digits; at least 1920 and at most 2002.
+  let re = Regex::new(r"byr:(\d{4}) ").unwrap(); // byr (Birth Year) - four digits; at least 1920 and at most 2002.
 
   if let Some(cap) = re.captures(passport) {
     let val: u32 = (&cap[1]).to_string().parse().unwrap();
@@ -48,7 +49,7 @@ fn byr_valid(passport: &str) -> bool {
 }
 
 fn iyr_valid(passport: &str) -> bool {
-  let re = Regex::new(r"iyr:(\d{4})").unwrap(); // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
+  let re = Regex::new(r"iyr:(\d{4}) ").unwrap(); // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
 
   if let Some(cap) = re.captures(passport) {
     let val: u32 = (&cap[1]).to_string().parse().unwrap();
@@ -58,7 +59,7 @@ fn iyr_valid(passport: &str) -> bool {
 }
 
 fn eyr_valid(passport: &str) -> bool {
-  let re = Regex::new(r"eyr:(\d{4})").unwrap(); // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
+  let re = Regex::new(r"eyr:(\d{4}) ").unwrap(); // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
 
   if let Some(cap) = re.captures(passport) {
     let val: u32 = (&cap[1]).to_string().parse().unwrap();
@@ -68,7 +69,7 @@ fn eyr_valid(passport: &str) -> bool {
 }
 
 fn hgt_valid(passport: &str) -> bool {
-  let re = Regex::new(r"hgt:(\d{1,3})(\S{2})").unwrap(); // hgt (Height) - a number followed by either cm or in:
+  let re = Regex::new(r"hgt:(\d{2,3})(\S{2}) ").unwrap(); // hgt (Height) - a number followed by either cm or in:
   // If cm, the number must be at least 150 and at most 193.
   // If in, the number must be at least 59 and at most 76.
 
@@ -83,17 +84,17 @@ fn hgt_valid(passport: &str) -> bool {
 }
 
 fn hcl_valid(passport: &str) -> bool {
-  let re = Regex::new(r"hcl:([0-9a-f]{6})").unwrap(); // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
+  let re = Regex::new(r"hcl:#([0-9a-f]{6}) ").unwrap(); // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
   return re.is_match(passport)
 }
 
 fn ecl_valid(passport: &str) -> bool {
-  let re = Regex::new(r"ecl:(amb|blu|brn|gry|grn|hzl|oth)").unwrap(); // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
+  let re = Regex::new(r"ecl:(amb|blu|brn|gry|grn|hzl|oth) ").unwrap(); // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
   return re.is_match(passport)
 }
 
 fn pid_valid(passport: &str) -> bool {
-  let re = Regex::new(r"pid:(\d{9})").unwrap(); // pid (Passport ID) - a nine-digit number, including leading zeroes.  
+  let re = Regex::new(r"pid:(\d{9}) ").unwrap(); // pid (Passport ID) - a nine-digit number, including leading zeroes.  
   return re.is_match(passport)
 }
 
