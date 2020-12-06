@@ -1,20 +1,27 @@
 import scala.io.Source
 
 object Part1 extends App {
+  val ROW_COUNT = 128
+  val COL_COUNT = 8
+
   val filepath = "input.txt"
-  val maxSeat = Source
+  val seats = Source
                   .fromFile(filepath)
                   .getLines()
                   .map(seatId(_))
-                  .reduceLeft(_ max _)
+                  .toList
+                  .sorted
 
-  println(maxSeat)
+  seats.reduce((a, b) => {
+    if (b - a > 1) println(a + 1)
+    b
+  })
 
   def seatId(line: String): Int = {
     var row = 0
-    var rowCnt = 128
+    var rowCnt = ROW_COUNT
     var col = 0
-    var colCnt = 8
+    var colCnt = COL_COUNT
     for (char <- line) {
       char match {
         case 'F' => rowCnt /= 2
@@ -23,6 +30,6 @@ object Part1 extends App {
         case 'R' => colCnt /= 2; col += colCnt
       }
     }
-    return row * 8 + col
+    row * COL_COUNT + col
   }
 }
