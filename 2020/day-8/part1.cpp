@@ -52,7 +52,6 @@ int main() {
       case command_type::nop:
         ++i;
 using namespace std;
-
         break;
     }
   }
