@@ -39,7 +39,7 @@ boards = (lines.size/6).times.map do |n|
   Board.new(lines[x..y])
 end
 
-(1..lines.size).each do |upto|
+(1..numbers.size).each do |upto|
   ns = numbers[0...upto]
   unwin_boards = boards.reject(&:win)
   unwin_boards.each do |board|
