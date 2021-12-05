@@ -31,7 +31,7 @@ lines = File.open('input.txt').read.split("\n")
 
 numbers = lines[0].split(',').map(&:to_i)
 
-boards = 3.times.map do |n|
+boards = (lines.size/6).times.map do |n|
   x = 2 + n * 6
   y = 6 + n * 6
   Board.new(lines[x..y])
