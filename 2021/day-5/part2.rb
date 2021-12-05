@@ -19,8 +19,6 @@ min_x = min_y = 0
 max_x = lines.map { |l| [l.start[0], l.end[0]] }.flatten.max
 max_y = lines.map { |l| [l.start[1], l.end[1]] }.flatten.max
 
-lines.select! { |l| l.start[0] == l.end[0] || l.start[1] == l.end[1] }
-
 map = Array.new(max_y + 1)
 map.each_index { |i| map[i] = Array.new(max_x + 1, 0) }
 
