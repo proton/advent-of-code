@@ -15,7 +15,7 @@ pub fn main() {
         let y1 = groups[1][0];
         let y2 = groups[1][1];
 
-        let is_covered = (x1 <= y1 && x2 >= y2) || (y1 <= x1 && y2 >= x2);
+        let is_covered = (x2 >= y1 && x2 <= y2) || (y2 >= x1 && y2 <= x2);
         // println!("{} {}", line, is_covered);
         if is_covered {
           pairs_count += 1;
