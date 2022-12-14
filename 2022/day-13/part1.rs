@@ -1,11 +1,22 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
+use std::fmt;
+use std::cmp;
 
 #[derive(Clone)]
 enum Packet {
   Number(usize),
   Array(Vec<Packet>),
+}
+
+impl fmt::Debug for Packet {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Packet::Number(n) => write!(f, "{}", n),
+            Packet::Array(arr) => write!(f, "{:?}", arr),
+        }
+    }
 }
 
 pub fn main() {
@@ -46,61 +57,68 @@ fn is_good(pair: &Vec<String>) -> bool {
     let packet1 = parse_line(&pair[0]);
     let packet2 = parse_line(&pair[1]);
     
-    return compare(packet1, packet2);
+    return compare(packet1, packet2) <= 0;
 }
 
-fn compare(packet1: Packet, packet2: Packet) -> bool {
+fn arrairize(packet: Packet) -> Packet {
+    return Packet::Array(vec![packet]);
+}
+
+fn compare(packet1: Packet, packet2: Packet) -> i32 {
+    // println!("{:?} vs {:?}", packet1, packet2);
+    let mut c = 0;
     if matches!(packet1, Packet::Number(_)) && matches!(packet2, Packet::Number(_)) {
-        let n1 = if let Packet::Number(n1) = packet1 { n1 } else { 0 };
-        let n2 = if let Packet::Number(n2) = packet2 { n2 } else { 0 };
-        return n1 <= n2;
+        // println!("compare_numbers");
+        c = compare_numbers(packet1, packet2);
     }
-    if matches!(packet1, Packet::Array(_)) && matches!(packet2, Packet::Array(_)) {
-        return compare_arrays(packet1, packet2);
+    else if matches!(packet1, Packet::Array(_)) && matches!(packet2, Packet::Array(_)) {
+        // println!("compare_arrays");
+        c = compare_arrays(packet1, packet2);
     }
-    if matches!(packet1, Packet::Number(_)) && matches!(packet2, Packet::Array(_)) {
-        return compare_number_with_array(packet1, packet2);
+    else if matches!(packet1, Packet::Number(_)) && matches!(packet2, Packet::Array(_)) {
+        // println!("compare_number_with_array");
+        c = compare_arrays(arrairize(packet1), packet2);
     }
-    if matches!(packet1, Packet::Array(_)) && matches!(packet2, Packet::Number(_)) {
-        return compare_array_with_number(packet1, packet2);
+    else if matches!(packet1, Packet::Array(_)) && matches!(packet2, Packet::Number(_)) {
+        // println!("compare_array_with_number");
+        c = compare_arrays(packet1, arrairize(packet2));
     }
-    return false;
+    // println!("=> {}", c);
+    return c;
 }
 
-fn compare_number_with_array(packet1: Packet, packet2: Packet) -> bool {
-    let a2 = if let Packet::Array(a2) = packet2 { a2 } else { vec![Packet::Number(1)] };
-    for p in a2 {
-        if !compare(packet1.clone(), p) {
-            return false;
-        }
+fn compare_numbers(packet1: Packet, packet2: Packet) -> i32 {
+    let n1 = if let Packet::Number(n1) = packet1 { n1 } else { 0 };
+    let n2 = if let Packet::Number(n2) = packet2 { n2 } else { 0 };
+    if n1 < n2 {
+        return -1;
     }
-    return true;
+    if n1 > n2 {
+        return 1;
+    }
+    return 0;
 }
 
-fn compare_array_with_number(packet1: Packet, packet2: Packet) -> bool {
-    let a1 = if let Packet::Array(a1) = packet1 { a1 } else { vec![Packet::Number(1)] };
-    for p in a1 {
-        if !compare(p, packet2.clone()) {
-            return false;
-        }
-    }
-    return true;
-}
-
-fn compare_arrays(packet1: Packet, packet2: Packet) -> bool {
+fn compare_arrays(packet1: Packet, packet2: Packet) -> i32 {
     let a1 = if let Packet::Array(a1) = packet1 { a1 } else { vec![Packet::Number(1)] };
     let a2 = if let Packet::Array(a2) = packet2 { a2 } else { vec![Packet::Number(1)] };
-    if a1.len() > a2.len() {
-        return false;
-    }
-    for i in 0..a1.len() {
+    
+    let m = cmp::max(a1.len(), a2.len());
+    for i in 0..m {
+        if i == a1.len() {
+            return -1;
+        }
+        if i == a2.len() {
+            return 1;
+        }
         let e1 = a1[i].clone();
         let e2 = a2[i].clone();
-        if !compare(e1, e2) {
-            return false;
+        let c = compare(e1, e2);
+        if c != 0 {
+            return c;
         }
     }
-    return true;
+    return 0;
 }
 
 fn parse_line(line: &String) -> Packet {
